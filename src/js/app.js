@@ -15,41 +15,42 @@ const corpoTabela = document.getElementById('corpo-tabela');
 
 // funções que mexem no array
 
-const buscarPorId = function (id) {
-  return funcionarios.find(function (funcionario) {
-    return funcionario.id === id;
-  });
+// Exercício 3: substituindo uma função anônima tradicional por arrow function.
+//
+// Antes, com função anônima tradicional:
+//
+//   const buscarPorId = function (id) {
+//     return funcionarios.find(function (funcionario) {
+//       return funcionario.id === id;
+//     });
+//   };
+//
+// Depois, com arrow function (sem "function", e com uma linha só o return fica implícito):
+const buscarPorId = (id) => funcionarios.find((funcionario) => funcionario.id === id);
+
+const removerPorId = (id) => {
+  funcionarios = funcionarios.filter((funcionario) => funcionario.id !== id);
 };
 
-const removerPorId = function (id) {
-  funcionarios = funcionarios.filter(function (funcionario) {
-    return funcionario.id !== id;
-  });
-};
-
-const atualizarPorId = function (id, ...dados) {
-  buscarPorId(id).atualizar(...dados);
-};
+const atualizarPorId = (id, ...dados) => buscarPorId(id).atualizar(...dados);
 
 // formulário
 
-function lerFormulario() {
-  return [
-    campoNome.value.trim(),
-    Number(campoIdade.value),
-    campoCargo.value.trim(),
-    Number(campoSalario.value),
-  ];
-}
+const lerFormulario = () => [
+  campoNome.value.trim(),
+  Number(campoIdade.value),
+  campoCargo.value.trim(),
+  Number(campoSalario.value),
+];
 
-function limparFormulario() {
+const limparFormulario = () => {
   formulario.reset();
   idEmEdicao = null;
   botaoSalvar.textContent = 'Cadastrar';
   botaoCancelar.hidden = true;
-}
+};
 
-function carregarNoFormulario(funcionario) {
+const carregarNoFormulario = (funcionario) => {
   campoNome.value = funcionario.nome;
   campoIdade.value = funcionario.idade;
   campoCargo.value = funcionario.cargo;
@@ -59,23 +60,23 @@ function carregarNoFormulario(funcionario) {
   botaoSalvar.textContent = 'Salvar alterações';
   botaoCancelar.hidden = false;
   campoNome.focus();
-}
+};
 
 // tabela
 
-function criarCelula(texto) {
+const criarCelula = (texto) => {
   const celula = document.createElement('td');
   celula.textContent = texto;
   return celula;
-}
+};
 
-function criarBotao(rotulo) {
+const criarBotao = (rotulo) => {
   const botao = document.createElement('button');
   botao.textContent = rotulo;
   return botao;
-}
+};
 
-function renderizarTabela() {
+const renderizarTabela = () => {
   corpoTabela.innerHTML = '';
 
   if (funcionarios.length === 0) {
@@ -87,7 +88,7 @@ function renderizarTabela() {
     return;
   }
 
-  funcionarios.forEach(function (funcionario) {
+  funcionarios.forEach((funcionario) => {
     const botaoEditar = criarBotao('Editar');
     botaoEditar.onclick = function () {
       carregarNoFormulario(funcionario);
@@ -115,11 +116,11 @@ function renderizarTabela() {
     linha.appendChild(acoes);
     corpoTabela.appendChild(linha);
   });
-}
+};
 
 // botões do formulário
 
-function salvarFuncionario(evento) {
+botaoSalvar.onclick = function (evento) {
   // se tiver campo errado deixa o navegador avisar
   if (!formulario.checkValidity()) {
     return;
@@ -135,9 +136,7 @@ function salvarFuncionario(evento) {
 
   limparFormulario();
   renderizarTabela();
-}
-
-botaoSalvar.addEventListener('click', salvarFuncionario);
+};
 
 botaoCancelar.onclick = function () {
   limparFormulario();
