@@ -4,6 +4,9 @@ let funcionarios = [];
 // id do funcionário que está sendo editado (null = cadastro novo)
 let idEmEdicao = null;
 
+// guarda qual relatório está aberto pra ele atualizar sozinho
+let relatorioAtual = null;
+
 const formulario = document.getElementById('formulario-funcionario');
 const campoNome = document.getElementById('nome');
 const campoIdade = document.getElementById('idade');
@@ -12,6 +15,8 @@ const campoSalario = document.getElementById('salario');
 const botaoSalvar = document.getElementById('botao-salvar');
 const botaoCancelar = document.getElementById('botao-cancelar');
 const corpoTabela = document.getElementById('corpo-tabela');
+const tituloRelatorio = document.getElementById('titulo-relatorio');
+const listaRelatorio = document.getElementById('lista-relatorio');
 
 // funções que mexem no array
 
@@ -100,7 +105,7 @@ const renderizarTabela = () => {
       if (funcionario.id === idEmEdicao) {
         limparFormulario();
       }
-      renderizarTabela();
+      atualizarTela();
     };
 
     const acoes = document.createElement('td');
@@ -116,6 +121,61 @@ const renderizarTabela = () => {
     linha.appendChild(acoes);
     corpoTabela.appendChild(linha);
   });
+};
+
+// relatórios
+
+const relatorioSalarioAlto = () => ({
+  titulo: 'Funcionários com salário maior que R$ 5000',
+  linhas: funcionarios
+    .filter((funcionario) => funcionario.salario > 5000)
+    .map((funcionario) => funcionario.toString()),
+});
+
+const relatorioMediaSalarial = () => {
+  // sem funcionários a divisão daria NaN
+  if (funcionarios.length === 0) {
+    return { titulo: 'Média salarial', linhas: [] };
+  }
+
+  const soma = funcionarios.reduce((total, funcionario) => total + funcionario.salario, 0);
+  return { titulo: 'Média salarial', linhas: [formatarMoeda(soma / funcionarios.length)] };
+};
+
+const relatorioCargosUnicos = () => ({
+  titulo: 'Cargos únicos',
+  linhas: [...new Set(funcionarios.map((funcionario) => funcionario.cargo))],
+});
+
+const relatorioNomesMaiusculos = () => ({
+  titulo: 'Nomes em maiúsculo',
+  linhas: funcionarios.map((funcionario) => funcionario.nome.toUpperCase()),
+});
+
+const renderizarRelatorio = () => {
+  if (relatorioAtual === null) {
+    return;
+  }
+
+  const relatorio = relatorioAtual();
+  tituloRelatorio.textContent = relatorio.titulo;
+  listaRelatorio.innerHTML = '';
+
+  if (relatorio.linhas.length === 0) {
+    listaRelatorio.innerHTML = '<li>Nenhum dado para exibir.</li>';
+    return;
+  }
+
+  relatorio.linhas.forEach((linha) => {
+    const item = document.createElement('li');
+    item.textContent = linha;
+    listaRelatorio.appendChild(item);
+  });
+};
+
+const atualizarTela = () => {
+  renderizarTabela();
+  renderizarRelatorio();
 };
 
 // botões do formulário
@@ -135,11 +195,34 @@ botaoSalvar.onclick = function (evento) {
   }
 
   limparFormulario();
-  renderizarTabela();
+  atualizarTela();
 };
 
 botaoCancelar.onclick = function () {
   limparFormulario();
+};
+
+// botões dos relatórios
+
+const abrirRelatorio = (relatorio) => {
+  relatorioAtual = relatorio;
+  renderizarRelatorio();
+};
+
+document.getElementById('botao-salario-alto').onclick = function () {
+  abrirRelatorio(relatorioSalarioAlto);
+};
+
+document.getElementById('botao-media-salarial').onclick = function () {
+  abrirRelatorio(relatorioMediaSalarial);
+};
+
+document.getElementById('botao-cargos-unicos').onclick = function () {
+  abrirRelatorio(relatorioCargosUnicos);
+};
+
+document.getElementById('botao-nomes-maiusculos').onclick = function () {
+  abrirRelatorio(relatorioNomesMaiusculos);
 };
 
 renderizarTabela();
