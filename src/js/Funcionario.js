@@ -56,6 +56,13 @@ class Funcionario {
     this.#salario = salario;
   }
 
+  atualizar(nome, idade, cargo, salario) {
+    this.nome = nome;
+    this.idade = idade;
+    this.cargo = cargo;
+    this.salario = salario;
+  }
+
   toString() {
     return `Nome: ${this.nome} | Idade: ${this.idade} | Cargo: ${this.cargo} | Salário: ${formatarMoeda(this.salario)}`;
   }
