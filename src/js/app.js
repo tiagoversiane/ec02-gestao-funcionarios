@@ -75,8 +75,11 @@ const criarCelula = (texto) => {
   return celula;
 };
 
-const criarBotao = (rotulo) => {
+// classes do Bootstrap: "btn btn-sm" + a cor (btn-warning, btn-danger...)
+const criarBotao = (rotulo, cor) => {
   const botao = document.createElement('button');
+  botao.type = 'button';
+  botao.className = `btn btn-sm ${cor} me-1`;
   botao.textContent = rotulo;
   return botao;
 };
@@ -87,6 +90,7 @@ const renderizarTabela = () => {
   if (funcionarios.length === 0) {
     const celula = criarCelula('Nenhum funcionário cadastrado.');
     celula.colSpan = 6;
+    celula.className = 'text-center text-muted';
     const linha = document.createElement('tr');
     linha.appendChild(celula);
     corpoTabela.appendChild(linha);
@@ -94,12 +98,12 @@ const renderizarTabela = () => {
   }
 
   funcionarios.forEach((funcionario) => {
-    const botaoEditar = criarBotao('Editar');
+    const botaoEditar = criarBotao('Editar', 'btn-warning');
     botaoEditar.onclick = function () {
       carregarNoFormulario(funcionario);
     };
 
-    const botaoExcluir = criarBotao('Excluir');
+    const botaoExcluir = criarBotao('Excluir', 'btn-danger');
     botaoExcluir.onclick = function () {
       removerPorId(funcionario.id);
       if (funcionario.id === idEmEdicao) {
@@ -162,12 +166,13 @@ const renderizarRelatorio = () => {
   listaRelatorio.innerHTML = '';
 
   if (relatorio.linhas.length === 0) {
-    listaRelatorio.innerHTML = '<li>Nenhum dado para exibir.</li>';
+    listaRelatorio.innerHTML = '<li class="list-group-item text-muted">Nenhum dado para exibir.</li>';
     return;
   }
 
   relatorio.linhas.forEach((linha) => {
     const item = document.createElement('li');
+    item.className = 'list-group-item';
     item.textContent = linha;
     listaRelatorio.appendChild(item);
   });
