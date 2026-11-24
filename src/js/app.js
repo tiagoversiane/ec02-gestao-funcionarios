@@ -75,11 +75,11 @@ const criarCelula = (texto) => {
   return celula;
 };
 
-// classes do Bootstrap: "btn btn-sm" + a cor (btn-warning, btn-danger...)
+// classes do Bootstrap: "btn btn-sm" + a cor (btn-outline-secondary, btn-outline-danger...)
 const criarBotao = (rotulo, cor) => {
   const botao = document.createElement('button');
   botao.type = 'button';
-  botao.className = `btn btn-sm ${cor} me-1`;
+  botao.className = `btn btn-sm ${cor}`;
   botao.textContent = rotulo;
   return botao;
 };
@@ -98,12 +98,12 @@ const renderizarTabela = () => {
   }
 
   funcionarios.forEach((funcionario) => {
-    const botaoEditar = criarBotao('Editar', 'btn-warning');
+    const botaoEditar = criarBotao('Editar', 'btn-outline-secondary');
     botaoEditar.onclick = function () {
       carregarNoFormulario(funcionario);
     };
 
-    const botaoExcluir = criarBotao('Excluir', 'btn-danger');
+    const botaoExcluir = criarBotao('Excluir', 'btn-outline-danger');
     botaoExcluir.onclick = function () {
       removerPorId(funcionario.id);
       if (funcionario.id === idEmEdicao) {
